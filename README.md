@@ -53,15 +53,15 @@ Using Homebrew:
 ---
 
 ## Installation
-   To install run the following commands in Terminal/Powershell in order:
-    ```bash
+To install run the following commands in Terminal/Powershell in order:
+```bash
         mkdir Projects
         cd Projects
         git clone <YOUR_GIT_REPO_URL>
         cd admetlab3.0
         npm install -D @playwright/test@latest @cucumber/cucumber@13 typescript@5.6.3 ts-node@10.9.2 @types/node
         npx playwright install
-     ```      
+```      
 ---
 
 ## Writing Test Scenarios (BDD)
