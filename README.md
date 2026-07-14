@@ -14,35 +14,42 @@ The framework is built with:
 
 ## Prerequisites
 
-- **Node.js** v22
-  For Windows please follow the instructions on this page:
-    https://nodejs.org/download
-  For Mac:
-     Using brew:
-       1) Install brew first if you do not have, run the following command in Terminal:
-            ```bash
-             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            ```
-       2) Add brew to your paths to use in your Terminal:
-           ```bash
-               echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
-               eval "$(/opt/homebrew/bin/brew shellenv)"
-           ```
-       3) Verify the brw installation by running the follwoing command in Terminal:
-          ```bash
-               brew --version
-           ```
-       4) Run the follwoing command in Terminal to install NodeJs V22:
-            ```bash
-                brew install node@22
-             ```  
-       5) Verify the installation by running the following commands in Terminal:
-             ```bash
-                 node -v
-                 npm -v
-             ```  
-           
+## Node.js v22
 
+### Windows
+
+Follow the instructions on this page: https://nodejs.org/download
+
+### Mac
+
+Using Homebrew:
+
+1. Install Homebrew (skip if already installed):
+```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+2. Add Homebrew to your PATH:
+```bash
+   echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+   eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+3. Verify the Homebrew installation:
+```bash
+   brew --version
+```
+
+4. Install Node.js v22:
+```bash
+   brew install node@22
+```
+
+5. Verify the installation:
+```bash
+   node -v
+   npm -v
+```
 ---
 
 ## Installation
