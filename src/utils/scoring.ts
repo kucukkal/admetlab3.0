@@ -15,7 +15,8 @@ export function scoreTransition(from: Status, to: Status): number {
 
 export function buildWideScoreTable(
     parent: Record<string, Status>,
-    children: Array<Record<string, Status>>
+    children: Array<Record<string, Status>>,
+    validity: boolean[] = children.map(() => true)
 ) {
     const props = Object.keys(parent);
 
@@ -23,6 +24,11 @@ export function buildWideScoreTable(
         const row: Record<string, any> = { Property: prop };
 
         children.forEach((childMap, idx) => {
+            if (!validity[idx]) {
+                row[`Score ${idx + 1}`] = "N/A";
+                return;
+            }
+
             const from: Status = parent[prop] ?? "None";
             const to: Status = childMap[prop] ?? "None";
             row[`Score ${idx + 1}`] = scoreTransition(from, to);
@@ -30,13 +36,6 @@ export function buildWideScoreTable(
 
         return row;
     });
-
-    const finalRow: Record<string, any> = { Property: "Final Score" };
-    children.forEach((_, idx) => {
-        const col = `Score ${idx + 1}`;
-        finalRow[col] = rows.reduce((sum, r) => sum + (r[col] ?? 0), 0);
-    });
-    rows.push(finalRow);
 
     return rows;
 }

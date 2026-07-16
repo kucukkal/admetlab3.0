@@ -2,7 +2,7 @@ import { Before, After, setDefaultTimeout } from "@cucumber/cucumber";
 import fs from "fs";
 import path from "path";
 
-setDefaultTimeout(120 * 1000); // 120
+setDefaultTimeout(1200 * 1000); // 120
 const EXCEL_PATH = path.resolve("admet_score.xlsx");
 
 Before(async function () {

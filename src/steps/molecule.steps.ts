@@ -24,12 +24,20 @@ Given("I evaluate the following child molecules:", async function (table: DataTa
 
     this.childPropsList = [];
     this.childSmilesList = rows.map(r => r.smiles);
+    this.childValidityList = [];
 
     const pageObj = new AdmetLabPage(this.page);
 
     for (const { smiles } of rows) {
         await pageObj.open();
-        await pageObj.submitSmiles(smiles);
+        const isValid = await pageObj.submitSmiles(smiles);
+        if (!isValid) {
+            console.log(`Invalid SMILES skipped: ${smiles}`);
+            this.childValidityList.push(false);
+            this.childPropsList.push({});
+            continue;
+        }
+        this.childValidityList.push(true);
         const props = await extractProperties(this.page);
         console.log("Child total props:", Object.keys(props).length);
         console.log(
@@ -41,7 +49,7 @@ Given("I evaluate the following child molecules:", async function (table: DataTa
 });
 
 When("I compare the ADMET properties", function () {
-    this.scoreMatrix = buildWideScoreTable(this.parentProps, this.childPropsList);
+    this.scoreMatrix = buildWideScoreTable(this.parentProps, this.childPropsList, this.childValidityList);
     console.log("Excel columns:", Object.keys(this.scoreMatrix[0]));
 });
 

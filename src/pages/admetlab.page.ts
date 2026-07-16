@@ -15,23 +15,39 @@ export class AdmetLabPage {
         await this.page.waitForSelector("#smiles", { timeout: 60_000 });
     }
 
-    async submitSmiles(smiles: string) {
+    async submitSmiles(smiles: string): Promise<boolean> {
         await this.page.fill("#smiles", smiles);
         await this.page.click("button:has-text('Submit')");
 
-        // Wait for results container
-        await this.page.waitForSelector("#resultPage", { timeout: 120_000 });
+        const errorLocator = this.page.locator('div[class*="alert-warning"]:visible', {
+            hasText: 'The SMILES is invalid! please check!',
+        });
+        const resultLocator = this.page.locator('#resultPage');
+        const SUBMIT_TIMEOUT = 180_000; // bumped from 120s to 180s
 
-        // Wait for rows
+        const outcome = await Promise.race([
+            errorLocator.waitFor({ state: 'visible', timeout: SUBMIT_TIMEOUT }).then(() => 'error' as const),
+            resultLocator.waitFor({ state: 'visible', timeout: SUBMIT_TIMEOUT }).then(() => 'success' as const),
+        ]).catch(() => 'timeout' as const);
+
+        if (outcome === 'error') {
+            return false; // invalid SMILES, nothing more to wait for
+        }
+
+        if (outcome === 'timeout') {
+            throw new Error(`Timed out waiting for either result or error message for SMILES: ${smiles}`);
+        }
+
+        // outcome === 'success' -> continue waiting for full render as before
         await this.page.waitForSelector("#resultPage table tbody tr", { timeout: 120_000 });
 
-        // ✅ Wait until at least some colored circles exist
         await this.page.waitForSelector("#resultPage i.fa-circle, #resultPage i.fas.fa-circle", {
             timeout: 120_000,
         });
 
-        // ✅ Optional: stabilize circle count (prevents partial render)
         await this.waitForCountToStabilize("#resultPage i.fa-circle, #resultPage i.fas.fa-circle", 500, 3);
+
+        return true; // valid SMILES, results fully rendered
     }
 
     private async waitForCountToStabilize(selector: string, intervalMs: number, stableChecks: number) {
@@ -47,7 +63,6 @@ export class AdmetLabPage {
             await this.page.waitForTimeout(intervalMs);
         }
     }
-
 
     private async waitForRowCountToStabilize(selector: string, intervalMs: number, stableChecks: number) {
         let last = -1;
